@@ -1,0 +1,93 @@
+@model WebApp.ViewModels.ReservationViewModels
+
+@{
+    ViewData["Title"] = "Reserve";
+}
+
+
+<h3>Reservation</h3>
+
+
+<div class="row" id="reservationForm">
+    <div class="col-md-6">
+        <form asp-action="Reserve">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                 <input type="hidden" asp-for="ValidUntil" class="form-control" />
+
+            <div class="form-group">
+                <label asp-for="Price" class="ResTitle"></label>:
+                @Html.DisplayFor(modelItem => Model.Price) €
+                  <input type="hidden" asp-for="Price" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalTravelTime" class="ResTitle"></label>:
+                @Html.DisplayFor(modelItem => Model.TotalTravelTime.Days) Days
+                @Html.DisplayFor(modelItem => Model.TotalTravelTime.Hours)h
+                @Html.DisplayFor(modelItem => Model.TotalTravelTime.Minutes)m
+                <input type="hidden" asp-for="TotalTravelTime" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Route" class="ResTitle"></label>:
+                @{ var counter = 0;}
+                @foreach (var item in Model.Route!)
+                {
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item)
+                        @if (Model.Route.Count -1 != counter)
+                        {
+                            <span>⎯⎯⎯⎯✈</span>
+                        }
+
+                    </td>
+                    {counter++;}
+                }
+
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Companies" class="ResTitle"></label>:
+                @{ var count = 0;}
+                @foreach (var item in Model.Companies!)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item)
+                        @if (Model.Companies.Count - 1 != count)
+                        {
+                            <span>, </span>
+                        }
+
+                    </td>
+                    {count++;}
+
+                }
+
+            </div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="ResTitle"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="LastName" class="ResTitle"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+                <input type="hidden" asp-for="Id" class="form-control" />
+
+
+            <div class="form-group" id="reservationButton">
+                <input type="submit" value=Reserve class="btn btn-info" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to main page</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,93 @@
+@model IEnumerable<DAL.App.DTO.Reservation>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<table class="table" id="reservationHeader">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TravelTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Routes)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.CompanyNames)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelIte => item.Price)€
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TravelTime.Days) Days
+                @Html.DisplayFor(modelItem => item.TravelTime.Hours)h
+
+                @Html.DisplayFor(modelItem => item.TravelTime.Minutes)m
+
+            </td>
+
+             @{ var counter = 0;}
+
+
+                <td>
+                 @foreach (var route in item.Route!)
+                 {
+                    @Html.DisplayFor(modelItem => route)
+                    @if (item.Route!.Count -1 != counter)
+                    {
+                        <span>⎯⎯⎯✈</span>
+                    }
+
+                        counter++;
+
+                    }
+                </td>
+
+
+            @{ var count = 0;}
+
+
+               <td>
+               @foreach (var company in item.Companies!)
+               {
+                   @Html.DisplayFor(modelItem => company)
+                   @if (item.Companies!.Count -1 != count)
+                   {
+                       <span>, </span>
+                   }
+                  {count++;}
+              }
+               </td>
+
+
+
+
+
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,203 @@
+﻿@using Newtonsoft.Json
+@using DAL.App.DTO
+@using Microsoft.AspNetCore.Http.Features
+@using Microsoft.AspNetCore.Razor.Language
+@model WebApp.ViewModels.RouteViewModels
+@{
+    ViewData["Title"] = "Home Page";
+}
+<h3>Solar System</h3>
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="container">
+    <div id="searchBox">
+        <form asp-action="Find">
+          <span  class="text-danger">@Model.ErrorMessage</span>
+            <div class="input-group">
+                <div class="col-sm" >
+                    <label asp-for="From" class="control-label"></label>
+                    <select asp-for="From" class="form-control" asp-items="Model.PlanetSelectList">
+                        <option value=""> --- Select ---</option>
+                    </select>
+                    <span asp-validation-for="From" class="text-danger"></span>
+
+                </div>
+                <div class="col-sm">
+                    <label asp-for="To" class="control-label"></label>
+                    <select asp-for="To" class="form-control" asp-items="Model.PlanetSelectList">
+                        <option value=""> --- Select ---</option>
+                    </select>
+                    <span asp-validation-for="To" class="text-danger"></span>
+                </div>
+                <div class="col-sm">
+                    <label asp-for="CompanyName" class="control-label"></label>
+                    <select asp-for="CompanyName" class="form-control" asp-items="Model.CompanySelectList">
+                        <option value=""> --- Select company ---</option>
+                    </select>
+                </div>
+            </div>
+            <div class="input-group" id="searchBoxSecondLine">
+                <div class="col-sm">
+                    <label asp-for="ShortByPrice" class="control-label"></label>
+                    <dd >
+                        <input asp-for="ShortByPrice" class="form-control" />
+                    </dd>
+
+                </div>
+                <div class="col-sm">
+                    <label asp-for="ShortByDate" class="control-label"></label>
+                    <dd >
+                        <input asp-for="ShortByDate" class="form-control" />
+                    </dd>
+
+                </div>
+                <div class="col-sm">
+
+                    <label asp-for="ShortBy" class="control-label"></label>
+                    <select asp-for="ShortBy" class="form-control" >
+                        <option value="0"> --- Short by ---</option>
+                         <option value="1"> Cheapest first</option>
+                        <option value="2"> Fastest first</option>
+                         <option value="3"> Shortest distance</option>
+                    </select>
+
+
+                </div>
+                <div class="col-sm-2" id="searchButton">
+                    <input type="submit"  value="Search flights" class="btn btn-secondary" />
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+    <div class="container">
+
+        <span  class="mainMessage">@Model.MessageMain</span>
+          <span  class="sessionMessage">@Model.SessionMessage</span>
+
+
+        @foreach (var item in Model.Legs!)
+        {
+
+            if (item.Providers.Count == 0)
+            {
+                <h1>No routes were found!</h1>
+            }
+
+            <div>
+                <br>
+            </div>
+
+            <div class="row" id="flightBox">
+
+                @{ var count = 0; }
+                @foreach (var provider in item.Providers)
+                {
+
+                    <div class="row" id="allFlights">
+                        <div class="col-sm">
+                            <div id="fromFlightCol">
+                                <b class="FromToText">
+                                    @Html.DisplayFor(modelItem => provider.From)
+                                </b>
+                                <br>
+                                @Html.DisplayFor(modelItem => provider.FlightStartString)
+                            </div>
+                            <br>
+                            <div id="companyName">
+                                @Html.DisplayFor(modelItem => provider.CompanyName)
+                            </div>
+                        </div>
+                        <div class="col-sm" id="middleCol">
+                            @Html.DisplayFor(modelItem => provider.TravelTime.Days) Days
+                            @Html.DisplayFor(modelItem => provider.TravelTime.Hours)h
+                            @Html.DisplayFor(modelItem => provider.TravelTime.Minutes)m
+                            <br>
+                            <p>︎⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ ✈</p>
+                        </div>
+                        <div class="col-sm">
+                            <b class="FromToText">
+                                @Html.DisplayFor(modelItem => provider.To)
+                            </b>
+                            <br>
+                            @Html.DisplayFor(model => provider.FlightEndString)
+
+                        </div>
+
+                        <div class="col-sm">
+                            <b class="FromToText">
+                                @Html.DisplayNameFor(model => model.Providers!.Price):
+                            </b>
+                            <br>
+                            @Html.DisplayFor(modelItem => provider.Price) €
+
+                            <br>
+                            <b class="FromToText">
+                                @Html.DisplayNameFor(model => provider.Distance):
+                            </b>
+                            @Html.DisplayFor(modelItem => provider.Distance)km
+
+                        </div>
+
+                    </div>
+
+                    <div id="reserveBox">
+                        @if (count == 0)
+                        {
+                            <div>
+                                <b>
+                                    @Html.DisplayNameFor(model => item.PriceTogether):
+                                </b>
+                                @Html.DisplayFor(modelItem => item.PriceTogether) €
+                            </div>
+                            <div>
+                                <b>
+                                    @Html.DisplayNameFor(model => item.DistanceTogether):
+                                </b>
+                                @Html.DisplayFor(modelItem => item.DistanceTogether)km
+                            </div>
+                            <div>
+                                <b>
+                                    @Html.DisplayNameFor(model => item.TimeTogether):
+                                </b>
+                                @Html.DisplayFor(modelItem => item.TimeTogether.Days) Days
+                                @Html.DisplayFor(modelItem => item.TimeTogether.Hours)h
+                                @Html.DisplayFor(modelItem => item.TimeTogether.Minutes)m
+                            </div>
+                            <input type="hidden" asp-for="RouteInfo" class="form-control"/>
+
+
+                        }
+                        @{ var data = JsonConvert.SerializeObject(@Model); }
+                        @if (item.Providers.Count > 1)
+                        {
+
+                            @if (count == 1)
+                            {
+                                <div>
+
+                                    <a asp-action="Reserve" asp-route-id="@item.Id" type="button" class="btn btn-outline-info">Reserve</a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div>
+                                <a asp-action="Reserve" asp-route-id="@item.Id" type="submit" class="btn btn-outline-info">Reserve</a>
+
+                            </div>
+                        }
+                    </div>
+
+
+                    {
+                        count++;
+                    }
+
+                }
+
+            </div>
+
+        }
+    </div>
+</div>

@@ -1,0 +1,10 @@
+using System;
+using Domain.Base;
+
+namespace Domain.App
+{
+    public class Leg : DomainEntityId
+    {
+
+    }
+}
